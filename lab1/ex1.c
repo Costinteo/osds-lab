@@ -1,6 +1,6 @@
+#include <stdio.h>
 
-const char useful[] = "How can you use this string?";
-char *wtf = "huh";
+char useful[] = "Where is this located?";
 
 int main() {
 	while (1) {}

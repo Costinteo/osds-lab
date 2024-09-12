@@ -1,4 +1,4 @@
-FLAGS=-fno-stack-protector -no-pie
+FLAGS=-fno-stack-protector -no-pie -g
 
 all:
 	@echo "Usage: make EXERCISE_NAME"
