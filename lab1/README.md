@@ -1,6 +1,6 @@
 # Laboratory 0x01 - Virtual Memory and Processes
 
-When managing the memory of a computer, the operating system uses a technique called "virtual memory". This technique gives each process the illusion that they have access to a very large memory pool, reserved just for them. In reality, virtual memory is a group of memory chunks (called pages), that are each mapped to the real physical memory, be it either Random-Access Memory (RAM) or Disk Space (also called swap space). Pages are not always loaded in memory, they are loaded as needed, whenever a program generates a *page fault*.
+When managing the memory of a computer, the operating system uses a technique called "virtual memory". This technique gives each process the illusion that they have access to a very large memory pool, reserved just for them. In reality, virtual memory is a group of memory chunks (called pages), that are each mapped to the real physical memory, be it either Random-Access Memory (RAM) or Disk Space (also called swap space). If a page is accessed, but is not currently mapped in RAM (it is on Disk), then the program generates a *page fault*, that gets caught by the kernel. Then the kernel maps that page into RAM.
 
 ![process virtual memory](../img/procvm.png)
 *(Source for the right side of the picture: https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Virtual_memory.svg/500px-Virtual_memory.svg.png)*
@@ -12,6 +12,8 @@ Let's see how a program is loaded into memory from disk. On Linux, executables a
 * .data -- containing global variables that are initialized.
 * .rodata -- containing read-only data, like constants and strings.
 * .text -- containing executable instructions (bytecode).
+
+If you wish to look at some beautiful dissections of ELF or PE, check out [corkami's pics](https://github.com/corkami/pics). Here's the [ELF dissection](https://github.com/corkami/pics/blob/master/binary/elf101/elf101.pdf) and the [PE dissection](https://raw.githubusercontent.com/corkami/pics/master/binary/pe101/pe101-64.png).
 
 Compile `ex1.c` with `make ex1`. The source code is basically just an infinite loop, so we can inspect the process that spawns when running the program. To inspect the process, we require some way to attach to it, like a debugger. For all the labs presented we will make extended use of good ol' `gdb`. You will learn how to use it efficiently to inspect processes and craft exploits. Fortunately, we're not crazy, we will be using a modernized version of it. There are 2 main well-known and used plugins that modernize gdb for exploitation:
 * [GDB Enhanced Features (GEF)](https://github.com/hugsy/gef)
@@ -85,6 +87,7 @@ You can also access this information in the `proc` filesystem, that holds data o
 So what are we looking at? The ELF sections mentioned earlier are mapped into *segments* of memory, marked with different protections based on the needs of each section. For example, `.rodata` will be mapped into a segment protected with read-only permissions. On the other hand, `.data` and `.bss` will be mapped into the same segment, protected with read-write permissions. You can see the file that is mapped in memory in each segment.
 
 **[Q1]**: Where is each section mapped? Try using the `search` command in `pwndbg` (or `search-pattern` in `GEF`).
+
 **[Q2]**: Try finding the address of `foo()` in gdb and printing its disassembly.
 
 What about the other files in `vmmap`? You are for sure familiar with the concepts of *libraries*. Most of the other segments are mapped libraries, but there are also some other special memory segments, like the `stack` or the `heap`, which are not actually filled up with useful values all the time. The other segments are all mapped from files, while these special segments have their memory reserved for *dynamic use*. All these segments are actually allocated using the [mmap](https://www.man7.org/linux/man-pages/man2/mmap.2.html) syscall. We'll talk about the `stack` and the `heap` later. Let's have some fun with `mmap`.
@@ -113,3 +116,7 @@ To see each line of assembly being executed by `foo()`, you can step into the fu
 Variables you declare in functions are allocated on the stack segment, as you've probably learnt in your Computer Architecture classes. You can actually see the stack printed in the `GEF` and `pwndbg` context. 
 
 ![calling convention](../img/calling_convention.png)
+
+## Exercise 3 - Mind control with GDB
+
+TODO: Control RIP + RDI to call a function that wasn't called normally.
