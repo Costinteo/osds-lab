@@ -90,9 +90,15 @@ So what are we looking at? The ELF sections mentioned earlier are mapped into *s
 
 **[Q2]**: Try finding the address of `foo()` in gdb and printing its disassembly.
 
-What about the other files in `vmmap`? You are for sure familiar with the concepts of *libraries*. Most of the other segments are mapped libraries, but there are also some other special memory segments, like the `stack` or the `heap`, which are not actually filled up with useful values all the time. The other segments are all mapped from files, while these special segments have their memory reserved for *dynamic use*. All these segments are actually allocated using the [mmap](https://www.man7.org/linux/man-pages/man2/mmap.2.html) syscall. We'll talk about the `stack` and the `heap` later. Let's have some fun with `mmap`.
+What about the other files in `vmmap`? You are for sure familiar with the concepts of *libraries*. Most of the other segments are mapped libraries, but there are also some other special memory segments, like the `stack` or the `heap`, which are not actually filled up with useful values all the time. The other segments are all mapped from files, while these special segments have their memory reserved for *dynamic use*. All these segments are actually allocated using the [mmap](https://www.man7.org/linux/man-pages/man2/mmap.2.html) syscall. We'll talk about the `stack` and the `heap` later. First, let's have some fun with `mmap`.
 
-## Exercise 2 - Writing a simple executable loader
+## Exercise 2 - Baby's first executable loader
+
+Quick reminder: When we are talking about executable instructions, we are talking about "bytecode" -- a sequence of bytes that the CPU reads and executes. All executable code on the computer gets at some point or another translated to this bytecode, as it's the only thing the CPU understands. Essentially, all high-level languages need to be translated to this. Usually, the *compilation process* does this, going from high level language (C) --(to)--> low level language (assembly) --(to)--> bytecode. For the course and lab, we are mostly going to use the x86\_64 architecture as a backbone for everything we do. If you need to know anything about its assembly language, I recommend the [Intel Software Developer's Manual](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) and a site for looking up instruction mnemonics easier, like [this one](https://www.felixcloutier.com/x86/).
+
+![compilation process](../img/compilation_process.png)
+
+The reverse of the compilation process (assembly -> high-level language) is called *decompilation*. The reverse of the assembly process (bytecode -> assembly) is called *disassembly*.
 
 Executable files are parsed by a program called a *loader*. In Linux, the ELF loader is implemented in the kernel (specifically in `fs/binfmt_elf.c`, [link here](https://elixir.bootlin.com/linux/latest/source/fs/binfmt_elf.c)). Basically, by looking at the ELF header and metadata, a loader can properly map the files in memory. We can create a mock-up of that -- let's open an executable file, find the offset for a function, allocate an executable region with `mmap` and then copy the bytes for the function to the executable region and jump to it.
 
@@ -111,12 +117,36 @@ There's a small template for it in `ex2.c`.
 
 To see each line of assembly being executed by `foo()`, you can step into the function pointer call with `step instruction`, or `si`.
 
-### Stacks and Heaps
+## Exercise 3 - Stacks, calling conventions and mind controlling execution
 
-Variables you declare in functions are allocated on the stack segment, as you've probably learnt in your Computer Architecture classes. You can actually see the stack printed in the `GEF` and `pwndbg` context. 
+What's up with stacks? You might have already seen the *stack* printed in the `GEF` and `pwndbg` context. Variables you declare in functions are allocated on the stack segment, as you've probably learnt in your Computer Architecture classes. The stack is important for managing each function's *frame* and maintaining control flow data essential for program execution. What does that mean? Whenever you call a function directly, the generated assembly instruction is `call` ([man here](https://www.felixcloutier.com/x86/call)). When executed, this instruction automatically pushes the next instruction's address on the stack. At the end of each function, there is a high chance of encountering a `ret` (return) instruction, that automatically pops this return address and moves execution to it. The expression "*moving execution*" refers to changing the value of the `RIP` register. The CPU has multiple very fast storage units called *registers*. You can think of them as variables. Some of them are normal and used for operations, some have special properties. One of these special ones is `RIP`, or the `Instruction Pointer`, that can only be changed through control flow instructions -- like `call`, or `ret`, or `jmp`!
+
+Additionally, whenever the compiler sees a function call, it must generate assembly that follows the *calling convention* of the system. That's just an agreement of how to pass arguments and who cleans up the stack frame. Ideally, every function call should leave the stack in the same way it was before the call. Below you can see an explanation of how the calling convention for Linux x86\_64 works:
 
 ![calling convention](../img/calling_convention.png)
 
-## Exercise 3 - Mind control with GDB
 
-TODO: Control RIP + RDI to call a function that wasn't called normally.
+So, for example, if I call `bar(a, b, c)`, the generated assembly will look something like this:
+
+```asm
+mov rdi, a;
+mov rsi, b;
+mov rdx, c;
+call bar;
+```
+
+Take a look at `ex3.c`. Compile it with `make ex3` and check out its disassembly.
+
+**[Q4]**: Can you identify the arguments of a function call in the disassembly?
+
+Now that we know about the calling convention, let's play with it. With a debugger, you can choose to change whatever registers you want, whenever you want. Using the `set` command in `gdb`, try calling a function that isn't called in `ex3.c`, with arguments chosen by you. Make it obvious that you chose the arguments.
+
+**[Q5]**: Did you get a `SIGSEGV` in `printf()`? What causes it? `pwndbg` hints at the reason.
+
+## Extra Challenges
+
+Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Here they are:
+
+1. **Filesystem Crawler** -- Check out what other things the `/proc/` filesystem offers. Some of the stuff there can be really helpful in exploitation. Can you find an information leak that could be useful in a web exploitation context?
+2. **ELF Pro** -- Try writing an ELF parser for the header and some metadata (like sections), following the [format specification](https://flint.cs.yale.edu/cs422/doc/ELF_Format.pdf). There are already [some structures](https://www.man7.org/linux/man-pages/man5/elf.5.html) in Linux that can help you out.
+3. **Control-flow Trickster** -- Can you call a more interesting function, that is not even in the source code? How can you do it without setting `RIP` directly?
