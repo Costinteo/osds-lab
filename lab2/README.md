@@ -37,7 +37,7 @@ Note that when compiling, the stack layout does not always follow the declaratio
 
 Attempt to exploit the buffer overflow. You can use `echo` and pipes in the terminal to pass input to the program easier: `echo -n 'asdf' | ./bin/ex1`.
 
-Hints: 
+**Hints**: 
 
 * You can pass input to gdb by saving it to a file and loading it when running the process. For example:
 
@@ -56,16 +56,55 @@ pwndbg> run < input
 
 ## Exercise 2 - Buffer Overflow, but cooler (ft. pwntools)
 
+This time, in `ex2.c`, the variable `is_admin` has to be equal to the value `0xDEADBEEF` for the user to be "granted access". Let's try getting access again, without using the correct password. We can use `echo -e` to pass bytes directly as input. For example:
 
+```
+$ echo -ne 'inputdeadbeef'         # prints "inputdeadbeef", 13 characters
+$ echo -ne 'input0xdeadbeef'       # prints "input0xdeadbeef", 15 characters
+$ echo -ne 'input\xde\xad\xbe\xef' # prints "input" + 4 ascii characters corresponding to each of the hex values 0xDE, 0xAD, 0xBE, 0xEF
+```
 
+Additionally, we need to be aware that the x64 CPUs are **little-endian**. That means that the least significant byte is the first. Here is how `0xCAFEBABE` looks in both endians:
+
+* Big-endian: `[0xCA, 0xFE, 0xBA, 0xBE]`;
+* Little-endian: `[0xBE, 0xBA, 0xFE, 0xCA]`;
+
+One more example, the number `258` as an unsigned integer is represented the following way in both endians:
+
+* Big-endian: `[0x00, 0x00, 0x01, 0x02] --> 0x102 --> 258`
+* Little-endian: `[0x02, 0x01, 0x00, 0x00] --> 0x102 --> 258`
+
+**[Q4]**: How can we exploit the program just with `echo -ne`?
+
+Manually writing bytes and thinking about endianess is not really enjoyable. On more complex exploits, the payload will also get significantly harder to write by hand. Why not be smart about it and write a simple automated exploit?
+
+As mentioned before, we'll be using pwntools. Ideally, the steps to write a pwntools exploit are as follows:
+
+1. Import pwntools: `from pwn import *`;
+2. Open the binary as process: `target = process("./bin/ex2")`;
+3. Build a payload. We can use `p64(x)`, `p32(x)` and `p16(x)` to transform numbers into little-endian byte sequences;
+4. Communicate with the binary: `line = target.recvline()` and `target.sendline(b"input")`;
+5. Once we're done crafting and sending the payload, we can turn it into an interactive shell: `target.interactive()`;
+
+There are a lot more functions to see. You can check out the [pwntools documentation](https://docs.pwntools.com/en/stable/), or writeups from pwn CTFs challenges on [.hidden's website](https://dothidden.xyz/tags/pwn/).
+
+A template is provided for you at `solve_ex2.py`. Complete it.
 
 ## Exercise 3 - Escaping the Matrix
 
+For this exercise, we will explore the real strength of buffer overflows. Variables hold some weight into influencing program execution, but by overwriting control-flow data on the stack, we are able to hijack execution to achieve arbitrary computation. Remember the calling convention, pictured below? Overwriting the function return address gives us the potential Aleph One explores in his Phrack article, which is to completely control the execution of the program.
+
+![calling convention](../img/calling_convention.png)
+
+**[Q5]**: How many bytes are between the beginning of our vulnerable buffer and the return address?
+
+Write a Python exploit using pwntools that hijacks execution and forces the vulnerable program to print "*ESCAPING THE MATRIX*".
+
 ## Exercise 4 - Crafting Byte Incantations
 
-Welcome to the 90's, powerful byte mage. Thou shalt not worry, the [NX bit](https://en.wikipedia.org/wiki/NX_bit) hath not been invented yet. In other words, 'tis *shelcoding* time.
+Welcome to the 90's, powerful byte mage. Thou shalt not worry, the [NX bit](https://en.wikipedia.org/wiki/NX_bit) hath not been invented yet. In other words, 'tis *shellcoding* time.
 
-
+For this exercise, we need to craft *shellcode*. As we've seen in the Phrack article, shellcode is basically a snippet of bytecode that runs a *shell*, like `/bin/sh`. Back in the day, to craft shellcode you would need to write assembly and then copy the compiled bytecode from your executable into your payload. Nowadays, we can just use the cool `asm` module ([link to docs](https://docs.pwntools.com/en/stable/asm.html)) from pwntools to directly compile and extract bytecode from assembly. Additionally, we can use `shellcraft` to help with certain instructions ([link to docs](https://docs.pwntools.com/en/stable/shellcraft/amd64.html)).
 
 
 

@@ -6,7 +6,7 @@ int main() {
 	char password[8];
 	scanf("%s", password);
 	if (0 == strcmp(password, SECRET)) {
-		is_admin = 1;
+		is_admin = 0xDEADBEEF;
 	}
 	
 	if (is_admin == 0xDEADBEEF) {
