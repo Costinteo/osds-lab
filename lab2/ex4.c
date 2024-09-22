@@ -2,7 +2,7 @@
 
 int main() {
 	char buffer[256];
-	printf("Buffer at 0x%p", buffer);
-
+	printf("Buffer at %p\n", buffer);
+	gets(buffer);
 	return 0;
 }

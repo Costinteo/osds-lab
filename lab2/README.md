@@ -106,10 +106,28 @@ Welcome to the 90's, powerful byte mage. Thou shalt not worry, the [NX bit](http
 
 For this exercise, we need to craft *shellcode*. As we've seen in the Phrack article, shellcode is basically a snippet of bytecode that runs a *shell*, like `/bin/sh`. Back in the day, to craft shellcode you would need to write assembly and then copy the compiled bytecode from your executable into your payload. Nowadays, we can just use the cool `asm` module ([link to docs](https://docs.pwntools.com/en/stable/asm.html)) from pwntools to directly compile and extract bytecode from assembly. Additionally, we can use `shellcraft` to help with certain instructions ([link to docs](https://docs.pwntools.com/en/stable/shellcraft/amd64.html)).
 
+Our objective is to craft a payload that will overwrite the return address of the function with the location of the input buffer. Then, the rest of the payload has to be the *shellcode*. In general, we'd want to execute a syscall, usually the `execve` syscall. You can check a syscall table for Linux x86\_x64 [here](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/). You can execute syscalls with the `syscall` instruction, after you have ensured that the parameters are set up correctly in the registers, as seen in the syscall table.
 
+**[Q6]**: What type is the first argument to `execve`? Check the manual (`man execve`).
+
+**[Q7]**: How can we get the right address of `/bin/sh`?
+
+A template is provided in `solve_ex4.py`.
+
+Here is the general idea of what we want to achieve:
+
+1. Write a payload containing shellcode that prepares a syscall to execute `execve("/bin/sh", NULL, NULL)`.
+2. Overwrite the return address to point to that shellcode.
+3. ???
+4. Profit.
+
+I would prefer if you assemble the whole payload manually, because there are some fun problems to think about. Using small helpers from `shellcraft` is fine, but I'd prefer if you don't just directly use `pwnlib.shellcraft.amd64.linux.sh()` or `pwnlib.shellcraft.amd64.linux.syscall()`, unless you can fully explain them.
+
+Ask if you need help with the assembly.
 
 ## Extra Challenges
 
 Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Since this lab only has a single theme, there's only one bonus challenge:
 
 1. **Exploitation prodigy** -- Can you figure out a way to beat `bonus.c`? The objective is to print out `True hackers see beyond what they are told... You won!`.
+2. **Ghost in the Shell(code)** -- Write a shellcode (preferably manually) that does something more interesting than `execve("/bin/sh", NULL, NULL)`. Maybe a [reverse shell](https://www.acunetix.com/blog/web-security-zone/what-is-reverse-shell/)? I don't know, get creative!
