@@ -86,7 +86,7 @@ As mentioned before, we'll be using pwntools. Ideally, the steps to write a pwnt
 4. Communicate with the binary: `line = target.recvline()` and `target.sendline(b"input")`;
 5. Once we're done crafting and sending the payload, we can turn it into an interactive shell: `target.interactive()`;
 
-There are a lot more functions to see. You can check out the [pwntools documentation](https://docs.pwntools.com/en/stable/), or writeups from pwn CTFs challenges on [.hidden's website](https://dothidden.xyz/tags/pwn/).
+There are a lot more functions to see. You can check out the [pwntools documentation](https://docs.pwntools.com/en/stable/), or writeups from pwn CTF challenges on [.hidden's website](https://dothidden.xyz/tags/pwn/).
 
 A template is provided for you at `solve_ex2.py`. Complete it.
 
