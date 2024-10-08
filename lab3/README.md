@@ -2,7 +2,7 @@
 
 Initial memory corruption exploits relied on shellcode injection. Back in the day, the stack used to be executable memory. After the introduction of the [NX bit](https://en.wikipedia.org/wiki/NX_bit), attacks evolved into a different direction. The NX bit basically set the standard for memory segments to have permissions according to their needs. The stack segment only needs to be read from and written to, but not to be executed from. Therefore, the introduction of the NX bit killed shellcode injection attacks... for *a while*.
 
-Attackers came up with the perfect solutions to the defending mechanisms - if we cannot inject arbitrary code, why not just *reuse* code that is already there?! We have actually done this ourselves in the previous laboratory, we have reused functions inside the program that were left there, but never called. However, that seems like a minuscule attack surface. Especially considering the functions should be completely benig! How could an attacker get a shell, or do *anything* useful with those functions? Well...
+Attackers came up with the perfect solutions to the defending mechanisms - if we cannot inject arbitrary code, why not just *reuse* code that is already there?! We have actually done this ourselves in the previous laboratory, we have reused functions inside the program that were left there, but never called. However, that seems like a minuscule attack surface. Especially considering the functions should be completely benign! How could an attacker get a shell, or do *anything* useful with those functions? Well...
 
 ![What if I told you...](../img/morpheus.png)
 
@@ -42,21 +42,80 @@ There is only one problem with this - *Address Space Layout Randomization* (or A
 
 Check out the `../util/toggle-aslr.sh` shell script. It will toggle ASLR on your system when you run it. Running it once will disable it, running it again will re-enable it. We can use it to play around and inspect the virtual memory. You don't really need to worry about forgetting to turn ASLR back on, it will turn itself back on after a restart.
 
-## Exercise 1 - Buffer Overflow to bypass authentication
+## Exercise 1 - .hidden airlines
 
+For exercise 1 we have a flying course, courtesy of *.hidden airlines*. Also, they don't really provide uh... landing instructions. Once you're up in the air, it's up to you to *return* to land.
 
-## Exercise 2 - Buffer Overflow, but cooler (ft. pwntools)
+Anyways, check your booking information in `ex1.c`. I am not sure you have a ticket.
 
+**[Q2]**: Explore the program. What does it do? Where is the vulnerability?
 
-## Exercise 3 - Escaping the Matrix
+**[Q3]**: How does ret2libc fit into this? What are some nice libc functions for exploitation?
 
+**[Q4]**: Can we get a shell with this program? How?
 
-## Exercise 4 - Crafting Byte Incantations
+Write a *pwntools* exploit to get a shell on `ex1`.
 
+**Hints**:
+
+* Think very carefully about *what* you control.
+* Source code is misleading, use the debugger to confirm program states.
+* Always keep the calling convention in mind!
+* This one might be a bit hard, but don't give up! Ask for help if it feels impossible. Theorycraft with your colleagues, come up with ideas.
+
+## Exercise 2 - Glade of Dreams
+
+For this exercise, please make sure you turn ASLR back **on**. This is so we cannot directly use libc functions. The program will not be compiled as PIE, meaning program addresses will not be affected by ASLR regardless.
+
+Additionally, for this exercise, we will require to dump ROP gadgets from a binary. ROP gadgets are small sequences of instructions that are either composed of only some of the instructions in a function, or entirely new instructions found in *between* the cracks of the real ones. They are found by trying to decode instructions backwards from a `0xc3` byte, which is the opcode for the `ret` instruction. The illustrations below show the process of discovering ROP gadgets:
+
+![discover ROP 1](../img/rop1.png)
+
+![discover ROP 2](../img/rop2.png)
+
+Sometimes, when grabbing only a few bytes from a real instruction, entirely new instructions are generated. See the example below. Note how the right side image starts decoding the instructions one byte later, resulting in a `pop rsi` that was not present in the original program.
+
+![magic ROP](../img/rop_compare.png)
+
+To dump ROP gadgets from a binary, I personally recommend [ROPGadget](https://github.com/JonathanSalwan/ROPgadget), but really any dumper probably works. Another example is [ropper](https://github.com/sashs/Ropper), which can also be used in pwndbg:
+
+```
+pwndbg> ropper -- --search 'pop rbp'
+[INFO] Load gadgets from cache
+[LOAD] loading... 100%
+[LOAD] removing double gadgets... 100%
+[INFO] Searching for gadgets: pop rbp
+
+[INFO] File: /home/costinteo/Programming/osds-lab/lab3/bin/ex2
+0x000000000040115d: pop rbp; ret;
+```
+
+We can use ROP gadget addresses as return addresses and chain them to achieve arbitrary computation.
+
+Now, for the exercise.
+
+**[Q5]**: Explore the program. What does it do? Where is the vulnerability?
+
+**[Q6]**: Dump the ROP gadgets from the binary. Look at them and think which might be useful and why.
+
+**[Q7]**: How would you call `dream_msg()` with one of the strings in the binary using a ROP chain? Try it.
+
+**[Q8]**: How do you get a shell?
+
+Write a pwntools exploit to get a shell.
+
+**Hints**:
+
+* Always keep the calling convention in mind!
+* Some parts of the program can be red herrings. But they could give you ideas of how to exploit it.
+* The `__attribute__` mess is really there so the compiler can generate some specific ROP gadgets.
+* Ask for help if stuck.
 
 ## Extra Challenges
 
 Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Here are the challenges for this lab:
 
-1. **Exploitation prodigy** -- Can you figure out a way to beat `bonus.c`? The objective is to print out `True hackers see beyond what they are told... You won!`.
-2. **Ghost in the Shell(code)** -- Write a shellcode (preferably manually) that does something more interesting than `execve("/bin/sh", NULL, NULL)`. Maybe a [reverse shell](https://www.acunetix.com/blog/web-security-zone/what-is-reverse-shell/)? I don't know, get creative!
+1. **Address Space Who?** -- How would we be able to defeat ASLR? Compare libc function addresses when ASLR is on and when it is off, on multiple runs. Notice anything interesting (see pic below)? Can you solve "Glade of Dreams" with ASLR on?
+2. **ROP Overdose** -- Try your ROP skills against `bonus`. It is a real CTF challenge and it should be quite fun, as it requires more interesting chains than the ones we've done. I recommend using Ghidra, IDA or Binary Ninja to decompile it.
+
+![aslr](../img/aslr.png)

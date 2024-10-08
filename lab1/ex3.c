@@ -4,7 +4,7 @@
 char message[] = "Control is an illusion.";
 
 void print_msg(char *msg) {
-	printf("-==[ \x1b[31m%s\x1b[0m\n ]==-", msg);
+	printf("-==[ \x1b[31m%s\x1b[0m ]==-\n", msg);
 }
 
 void advertisment(int num, char *target) {
