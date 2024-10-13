@@ -44,7 +44,6 @@ Attempt to exploit the buffer overflow. You can use `echo` and pipes in the term
 ```
 $ echo -n 'asdf' > input
 $ gdb -q
-$ pwndbg -q
 pwndbg> file ./bin/ex1
 Reading symbols from bin/ex1...
 pwndbg> run < input
