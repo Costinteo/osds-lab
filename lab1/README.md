@@ -49,10 +49,25 @@ $ cd pwndbg
 $ ./setup.sh
 ```
 
-After you install any of them, open a new terminal (or a terminal tab) and attach to the process:
+After installing, make sure you have compiled the exercise with `make ex1` and are running it.
+
+Then open a new terminal (or a terminal tab) and attach to the process:
+
 ```
 $ sudo gdb -p $(pgrep ex1) -x ~/.gdbinit
 ```
+
+If you do not have sudo rights, you can also load the exercise directly with gdb, break on main and run:
+
+```
+$ gdb bin/ex1
+pwndbg> break main
+Breakpoint 1 at 0x40115c: file ex1.c, line 31.
+pwndbg> run
+Starting program: /home/costinteo/Programming/osds-lab/lab1/bin/ex1
+...
+```
+
 Depending on whether you chose `GEF` or `pwndbg`, you might be seeing the current state of the process, with its registers, disassembly of the current instructions, etc... If you don't see it, try out the `context` command.
 
 You can type `vmmap` to check out the virtual memory mapping. You should see something like this, but colored nicely:
@@ -86,9 +101,11 @@ You can also access this information in the `proc` filesystem, that holds data o
 
 So what are we looking at? The ELF sections mentioned earlier are mapped into *segments* of memory, marked with different protections based on the needs of each section. For example, `.rodata` will be mapped into a segment protected with read-only permissions. On the other hand, `.data` and `.bss` will be mapped into the same segment, protected with read-write permissions. You can see the file that is mapped in memory in each segment.
 
-**[Q1]**: Where is each section mapped? Try using the `search` command in `pwndbg` (or `search-pattern` in `GEF`).
+**[Q1]**: Where is each section mapped? You can try using the `search` command in `pwndbg` (or `search-pattern` in `GEF`) to search for contents such as the string `Where is this located?` found in the source file `ex1.c`. That will help you determine where each section is. Experiment with more types by changing the source code and recompiling.
 
-**[Q2]**: Try finding the address of `foo()` in gdb and printing its disassembly.
+Additionally, try searching for othe ways of matching memory segments with sections.
+
+**[Q2]**: Try finding the address of `bar()` in gdb and printing its disassembly.
 
 What about the other files in `vmmap`? You are for sure familiar with the concepts of *libraries*. Most of the other segments are mapped libraries, but there are also some other special memory segments, like the `stack` or the `heap`, which are not actually filled up with useful values all the time. The other segments are all mapped from files, while these special segments have their memory reserved for *dynamic use*. All these segments are actually allocated using the [mmap](https://www.man7.org/linux/man-pages/man2/mmap.2.html) syscall. We'll talk about the `stack` and the `heap` later. First, let's have some fun with `mmap`.
 
@@ -139,7 +156,7 @@ Take a look at `ex3.c`. Compile it with `make ex3` and check out its disassembly
 
 **[Q4]**: Can you identify the arguments of a function call in the disassembly?
 
-Now that we know about the calling convention, let's play with it. With a debugger, you can choose to change whatever registers you want, whenever you want. Using the `set` command in `gdb`, try calling a function that isn't called in `ex3.c`, with arguments chosen by you. Make it obvious that you chose the arguments.
+Now that we know about the calling convention, let's play with it. With a debugger, you can choose to change whatever registers you want, whenever you want. Using ONLY the `set` command in `gdb`, try calling a function that isn't called in `ex3.c`, with arguments chosen by you. Make it obvious that you chose the arguments.
 
 **[Q5]**: Did you get a `SIGSEGV` in `printf()`? What causes it? `pwndbg` hints at the reason.
 
