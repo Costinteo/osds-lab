@@ -4,7 +4,7 @@ Ah, yes, the legendary **buffer overflow**. The most infamous vulnerability in h
 
 In this laboratory, we shall reproduce and understand a classic buffer overflow attack. We will be using a technique called *code-reusing* initially and then later explore crafting *shellcode*, similarly to the Phrack article. Additionally, we will be learning the widely-used exploitation framework *pwntools*, to help us mount an attack easier, faster and automated.
 
-Note: All the programs we are exploiting will be compiled for 64-bits. We will be temporarily compile without stack cookies, which is one of the protections used by compilers, to simplify the process.
+Note: All the programs we are exploiting will be compiled for 64-bits. We will be temporarily compiling without stack cookies, which is one of the protections used by compilers, to simplify the process.
 
 At this point, we should check out [pwntools](https://github.com/Gallopsled/pwntools) and its [documentation](https://docs.pwntools.com/en/stable/). If you're on a Debian derivative, you can install it with the instructions found on the repo:
 
@@ -126,7 +126,7 @@ Ask if you need help with the assembly.
 
 ## Extra Challenges
 
-Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Since the there's really only two themes here, this lab only has 2 extra challenges:
+Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Since there are really only two themes here, this lab only has 2 extra challenges:
 
 1. **Exploitation prodigy** -- Can you figure out a way to beat `bonus.c`? The objective is to print out `True hackers see beyond what they are told... You won!`.
 2. **Ghost in the Shell(code)** -- Write a shellcode (preferably manually) that does something more interesting than `execve("/bin/sh", NULL, NULL)`. Maybe a [reverse shell](https://www.acunetix.com/blog/web-security-zone/what-is-reverse-shell/)? I don't know, get creative!
