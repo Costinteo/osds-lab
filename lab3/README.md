@@ -46,7 +46,7 @@ Check out the `../util/toggle-aslr.sh` shell script. It will toggle ASLR on your
 
 For exercise 1 we have a flying course, courtesy of *.hidden airlines*. Also, they don't really provide uh... landing instructions. Once you're up in the air, it's up to you to *return* to land.
 
-Anyways, check your booking information in `ex1.c`. I am not sure you have a ticket.
+Anyways, check your booking information in `ex1.c`. I am not sure you have a ticket. Make sure you have ASLR turned off using `../util/toggle-aslr.sh`.
 
 **[Q2]**: Explore the program. What does it do? Where is the vulnerability?
 
@@ -92,7 +92,7 @@ pwndbg> ropper -- --search 'pop rbp'
 
 We can use ROP gadget addresses as return addresses and chain them to achieve arbitrary computation.
 
-Now, for the exercise.
+Now, for the exercise. Run `make ex2` to compile and check out `ex2.c`.
 
 **[Q5]**: Explore the program. What does it do? Where is the vulnerability?
 
@@ -115,7 +115,7 @@ Write a pwntools exploit to get a shell.
 
 Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Here are the challenges for this lab:
 
-1. **Address Space Who?** -- How would we be able to defeat ASLR? Compare libc function addresses when ASLR is on and when it is off, on multiple runs. Notice anything interesting (see pic below)? Can you solve "Glade of Dreams" with ASLR on?
+1. **Address Space Who?** -- How would we be able to defeat ASLR? Compare libc function addresses when ASLR is on and when it is off, on multiple runs. Notice anything interesting (see pic below)? Can you pop a shell in "Glade of Nightmares" (`nightmares.c`)?
 2. **ROP Overdose** -- Try your ROP skills against `bonus`. It is a real CTF challenge and it should be quite fun, as it requires more interesting chains than the ones we've done. I recommend using Ghidra, IDA or Binary Ninja to decompile it.
 
 ![aslr](../img/aslr.png)
