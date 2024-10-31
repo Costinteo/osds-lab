@@ -1,17 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 char souldream[128] = {};
 char ephemereal[] = "/bin/sh";
-
-char *strncpy(char *dest, const char *src, size_t n) {
-	size_t i;
-
-	for (i = 0; i < n && src[i] != '\0'; i++)
-		dest[i] = src[i];
-
-	return dest;
-}
 
 void dream_msg(char *msg) {
 	int color = 31;
@@ -34,7 +26,7 @@ void __attribute__((no_caller_saved_registers)) scramble_dream(char *dream) {
 void nightmare() {
 	char bad_nightmare[64];
 	puts("Sometimes, even dreams can become nightmares.");
-	strncpy(bad_nightmare, souldream, sizeof(souldream));
+	memcpy(bad_nightmare, souldream, sizeof(souldream));
 
 	puts("The Glade of Dreams is shattered...");
 }
@@ -53,7 +45,7 @@ int main() {
 	puts("This is where bits and pieces of programs return.");
 	puts("Can you find them all?");
 	dream();
-	nightmare();
 	scramble_dream(ephemereal);
+	nightmare();
 	deep_sleep();
 }
