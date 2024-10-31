@@ -103,7 +103,7 @@ So what are we looking at? The ELF sections mentioned earlier are mapped into *s
 
 **[Q1]**: Where is each section mapped? You can try using the `search` command in `pwndbg` (or `search-pattern` in `GEF`) to search for contents such as the string `Where is this located?` found in the source file `ex1.c`. That will help you determine where each section is. Experiment with more types by changing the source code and recompiling.
 
-Additionally, try searching for othe ways of matching memory segments with sections.
+Additionally, try searching for other ways of matching memory segments with sections.
 
 **[Q2]**: Try finding the address of `bar()` in gdb and printing its disassembly.
 
