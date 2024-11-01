@@ -8,8 +8,9 @@ char ephemereal[] = "/bin/sh";
 void dream_msg(char *msg) {
 	int color = 31;
 	for (int i = 0; i < 5; i++) {
-		printf("\x1b[%dm%s\n", color, msg);
+		printf("\x1b[%dm%s\n", color + i, msg);
 	}
+	printf("\x1b[0m");
 }
 
 void __attribute__((no_caller_saved_registers)) scramble_dream(char *dream) {
