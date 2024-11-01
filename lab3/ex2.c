@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char souldream[128] = {};
+char souldream[256] = {};
 char ephemereal[] = "/bin/sh";
 
 void dream_msg(char *msg) {
