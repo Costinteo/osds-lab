@@ -28,6 +28,7 @@ Simply put, a buffer overflow is when you try to copy more data into a memory lo
 ## Exercise 1 - Buffer Overflow to bypass authentication
 
 For the first exercise (`ex1.c`), we will be using the scenario you imagined at the previous question. The stack contains a variable that maintains the admin status of the current user. A user is made admin only if they know a secret password.
+Don't forget to use `make ex1` to build the exercise.
 
 **[Q2]**: Can you bypass the check that "grants you access", without knowing the secret password?
 
@@ -56,6 +57,7 @@ pwndbg> run < input
 ## Exercise 2 - Buffer Overflow, but cooler (ft. pwntools)
 
 This time, in `ex2.c`, the variable `is_admin` has to be equal to the value `0xDEADBEEF` for the user to be "granted access". Let's try getting access again, without using the correct password. We can use `echo -e` to pass bytes directly as input. For example:
+Use `make ex2` to build the exercise.
 
 ```
 $ echo -ne 'inputdeadbeef'         # prints "inputdeadbeef", 13 characters
@@ -92,6 +94,7 @@ A template is provided for you at `solve_ex2.py`. Complete it.
 ## Exercise 3 - Escaping the Matrix
 
 For this exercise, we will explore the real strength of buffer overflows. Variables hold some weight into influencing program execution, but by overwriting control-flow data on the stack, we are able to hijack execution to achieve arbitrary computation. Remember the calling convention, pictured below? Overwriting the function return address gives us the potential Aleph One explores in his Phrack article, which is to completely control the execution of the program.
+Build the exercise by running `make ex3`.
 
 ![calling convention](../img/calling_convention.png)
 
@@ -106,6 +109,8 @@ Welcome to the 90's, powerful byte mage. Thou shalt not worry, the [NX bit](http
 For this exercise, we need to craft *shellcode*. As we've seen in the Phrack article, shellcode is basically a snippet of bytecode that runs a *shell*, like `/bin/sh`. Back in the day, to craft shellcode you would need to write assembly and then copy the compiled bytecode from your executable into your payload. Nowadays, we can just use the cool `asm` module ([link to docs](https://docs.pwntools.com/en/stable/asm.html)) from pwntools to directly compile and extract bytecode from assembly. Additionally, we can use `shellcraft` to help with certain instructions ([link to docs](https://docs.pwntools.com/en/stable/shellcraft/amd64.html)).
 
 Our objective is to craft a payload that will overwrite the return address of the function with the location of the input buffer. Then, the rest of the payload has to be the *shellcode*. In general, we'd want to execute a syscall, usually the `execve` syscall. You can check a syscall table for Linux x86\_x64 [here](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/). You can execute syscalls with the `syscall` instruction, after you have ensured that the parameters are set up correctly in the registers, as seen in the syscall table.
+
+Run `make ex4` to build the exercise!
 
 **[Q6]**: What type is the first argument to `execve`? Check the manual (`man execve`).
 

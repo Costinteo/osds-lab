@@ -46,7 +46,7 @@ Check out the `../util/toggle-aslr.sh` shell script. It will toggle ASLR on your
 
 For exercise 1 we have a flying course, courtesy of *.hidden airlines*. Also, they don't really provide uh... landing instructions. Once you're up in the air, it's up to you to *return* to land.
 
-Anyways, check your booking information in `ex1.c`. I am not sure you have a ticket. Make sure you have ASLR turned off using `../util/toggle-aslr.sh`.
+Anyways, check your booking information in `ex1.c`. I am not sure you have a ticket. Make sure you have ASLR turned off using `../util/toggle-aslr.sh`. Also, compile with `make ex1`.
 
 **[Q2]**: Explore the program. What does it do? Where is the vulnerability?
 
