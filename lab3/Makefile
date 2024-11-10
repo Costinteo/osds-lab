@@ -10,6 +10,10 @@ ex2:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
 	gcc ex2.c -o ./bin/ex2 ${FLAGS} -mgeneral-regs-only
 
+nightmares:
+	@if [ ! -d ./bin ]; then mkdir bin; fi
+	gcc nightmares.c -o ./bin/nightmares ${FLAGS} -mgeneral-regs-only
+
 %:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
 	gcc $@.c -o ./bin/$@ ${FLAGS}
