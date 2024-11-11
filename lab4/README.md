@@ -99,6 +99,10 @@ Write a pwntools exploit to get a shell.
 **Hints**:
 
 * The vulnerability is a different class than usual.
+* If you read leaks, try not to split on whitespace, you could be missing bytes.
+* Read the `gets()` manual, there's a certain aspect of it that might ruin your exploit if you do not account for it.
+* Don't forget how *Lazy Binding* works. Make sure you're leaking stuff right.
+* Ask for help if you get very stuck, this might be quite difficult.
 
 ## Extra Challenges
 
