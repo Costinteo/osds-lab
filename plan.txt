@@ -1,7 +1,8 @@
 1. virtual memory lab
 2. ??? <-- pwntools + buffer overflow + shellcoding
-3. return 2 libc + ASLR
+3. return 2 libc + ASLR + ROP
 4. ROP + advanced ASLR bypass + canaries?
+- One byte overwrite, GOT hijack through out of bounds array write, format strings?
 5. ??? <--- fop/coop
 6. cache attacks???
 7. ??? <-- rowhammer mock-up + misc (maybe cabbage) + SROP
