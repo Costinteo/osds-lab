@@ -16,9 +16,11 @@ As a response to the buffer overflow problem, numerous mitigations have been imp
 
 In this lab, we shall learn to use ROP gadgets creatively, to leak and bypass ASLR. Additionally, we will analyze and use other *exploit primitives*, which will come in handy when combined with ROP.
 
-Before starting, we should also take a brief dive into Global Offset Table (GOT) and the Procedure Linkage Table (PLT), two essential sections in an ELF file used to resolve imported functions to their address in case of *dynamically linked executables*. When an executable is compiled, the addresses to imported functions are not known. Instead of jumping to the real functions, execution first jumps to the PLT section. This section contains small stubs that jump to the real function by using pointers held in GOT. The GOT section holds pointers to the real functions, from the linked libraries. Initially, this section does not have pointers in it, but the linker fills it in at runtime, either at the beginning of execution, called *Eager Binding*, or once each function is called, called *Lazy Binding*. The next two pictures present the concepts of Lazy Binding and Eager Binding, respectively.
+Before starting, we should also take a brief dive into Global Offset Table (GOT) and the Procedure Linkage Table (PLT), two essential sections in an ELF file used to resolve imported functions to their address in case of *dynamically linked executables*. When an executable is compiled, the addresses to imported functions are not known. Instead of jumping to the real functions, execution first jumps to the PLT section. This section contains small stubs that jump to the real function by using pointers held in GOT. The GOT section holds pointers to the real functions, from the linked libraries. Initially, this section does not have pointers in it, but the linker fills it in at runtime, either at the beginning of execution, called *Eager Binding*, or once each function is called, called *Lazy Binding*. The next picture illustrates the concept of Lazy Binding.
 
 ![Lazy Binding](../img/binding_lazy.png)
+
+Also, a diagram for Eager Binding is shown next:
 
 ![Eager Binding](../img/binding_eager.png)
 
@@ -40,7 +42,7 @@ At the beginning of the binary, the imported functions should point to executabl
 Try stepping through the process to get a feeling about how it looks. Run `got` before the first `puts` call. Then step into `puts@plt` with `si`. Below is an excerpt from `pwndbg`, showing the path execution takes.
 
 ```
- ► 0x401050       <puts@plt>                        endbr64 
+ ► 0x401050       <puts@plt>                        endbr64
    0x401054       <puts@plt+4>                      bnd jmp qword ptr [rip + 0x2fbd]   <0x401030> # <---- jump to GOT pointer for puts
     ↓
    0x401030                                         endbr64                                       # <---- initially points to stub triggering the linker
@@ -50,7 +52,7 @@ Try stepping through the process to get a feeling about how it looks. Run `got` 
    0x401020                                         push   qword ptr [rip + 0x2fe2]
    0x401026                                         bnd jmp qword ptr [rip + 0x2fe3]   <_dl_runtime_resolve_xsavec> # <---- finally jumps to real linker code
     ↓
-   0x7ffff7fd8d30 <_dl_runtime_resolve_xsavec>      endbr64 
+   0x7ffff7fd8d30 <_dl_runtime_resolve_xsavec>      endbr64
    0x7ffff7fd8d34 <_dl_runtime_resolve_xsavec+4>    push   rbx
    0x7ffff7fd8d35 <_dl_runtime_resolve_xsavec+5>    mov    rbx, rsp                    RBX => 0x7fffffffde30 ◂— 0
    0x7ffff7fd8d38 <_dl_runtime_resolve_xsavec+8>    and    rsp, 0xffffffffffffffc0     RSP => 0x7fffffffde00
@@ -59,10 +61,10 @@ Try stepping through the process to get a feeling about how it looks. Run `got` 
 Explore execution a bit. After the first run, `puts` jumps directly into libc, because the linker wrote its symbol to GOT:
 
 ```
- ► 0x401050       <puts@plt>      endbr64 
+ ► 0x401050       <puts@plt>      endbr64
    0x401054       <puts@plt+4>    bnd jmp qword ptr [rip + 0x2fbd]   <puts>
     ↓
-   0x7ffff7c80e50 <puts>          endbr64 
+   0x7ffff7c80e50 <puts>          endbr64
    0x7ffff7c80e54 <puts+4>        push   r14
    0x7ffff7c80e56 <puts+6>        push   r13
 ```
