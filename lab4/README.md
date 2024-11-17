@@ -108,7 +108,7 @@ Write a pwntools exploit to get a shell.
 
 ## Extra Challenges
 
-Extra challenges are still in the work! Here is a sneak peek for the extra challenges for this lab:
+Here are the extra challenges for this lab! Hope you have fun! The first one was contribution from local .hidden pwner, [BelgiNus](https://github.com/Stefan2320) (a.k.a Pinebel).
 
 1. **I love cookies!** -- Try to get a shell in `cookies.c` without ***smashing the stack***. Eating cookies with a knife can be dangerous, but I think eating them with a fork can be risky too.
 2. **Dude, just one byte, please!** -- This is how it feels when your friend only lets you take one bite of his deliciously-looking sandwich. Sure, you weren't hungry.. but after seeing that thing, who wouldn't be? Check out `bite.c`.
