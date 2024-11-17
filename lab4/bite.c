@@ -1,54 +1,109 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-typedef struct {
-	char *name;
-	unsigned int price;
+#define MAX_INGREDIENTS 8
+#define MAX_INGREDIENT_NAME_LEN 8
+
+typedef struct __attribute__((__packed__)) {
+	char name[MAX_INGREDIENT_NAME_LEN];
+	unsigned char price;
 } ingredient_t;
 
-ingredient_t PRICE_LIST = {
-	{"Lettuce", 1},
+typedef struct {
+	ingredient_t ingredients[MAX_INGREDIENTS];
+	char *codename;
+	void (*taste_function)(void);
+} sandwich_t;
+
+ingredient_t PRICE_LIST[256] = {
 	{"Tomato", 2},
-	{"Jalapeno", 5},
-	{"Chicken", 10},
+	{"Onion", 5},
+	{"Chicken", 12},
 	{"Pork", 15},
 	{"Beef", 25},
 };
 
-void order_sandwich() {
-	unsigned int ingredient_num;
 
-	puts("< How many ingredients would you like in your sandwich?");
-	printf("> ");
-	scanf("%u", &ingredient_num);
-	puts("< Here is our price list:");
-	for (int i = 0; i < sizeof(PRICE_LIST)/sizeof(*PRICE_LIST); i++) {
-		printf("%d. %s [$%u]\n", i+1, PRICE_LIST[i].name, PRICE_LIST[i].price);
+unsigned int INGREDIENTS_COUNT = 5;
+
+void backup_orders(char *backups_filename) {
+	char cmd[128];
+	snprintf(cmd, 127, "/bin/cp ./orders.txt %s", backups_filename);
+	system(cmd);
+}
+
+void good_taste() {
+	puts("Yum! Good!");
+}
+
+sandwich_t *order_sandwich() {
+	unsigned int ingredient_num;
+	sandwich_t *sandwich = malloc(sizeof(sandwich_t));
+	sandwich->taste_function = good_taste;
+
+	while (1) {
+		puts("< How many ingredients would you like in your sandwich?");
+		printf("You can have at most %d.\n> ", MAX_INGREDIENTS);
+		scanf("%u", &ingredient_num);
+		if (ingredient_num > MAX_INGREDIENTS) {
+			printf("< That's more than %d!\n", MAX_INGREDIENTS);
+			continue;
+		}
+		puts("< Here is our price list:");
+		for (int i = 0; i < INGREDIENTS_COUNT; i++) {
+			printf("%d. %s [$%u]\n", i+1, PRICE_LIST[i].name, PRICE_LIST[i].price);
+		}
+		break;
 	}
 
-	unsigned int total_pay = 0;
 	unsigned int ingredient_idx;
-	for (int i = 0; i < ingredient_num; i++) {
+	for (int i = 0; i <= ingredient_num; i++) {
 		while (1) {
-			printf("[ingredient no. %u/%u] > ", i+1, ingredient_num);
+			printf("[ingredient no. %u/%u] > ", i, ingredient_num);
 			scanf("%u", &ingredient_idx);
 			ingredient_idx--;
-			if (ingredient_idx < 0 || ingredient_idx >= sizeof(PRICE_LIST)/sizeof(*PRICE_LIST)) {
+			if (ingredient_idx < 0 || ingredient_idx >= INGREDIENTS_COUNT) {
 				puts("< That's not a valid ingredient! Try again.");
 				continue;
 			}
-			total_pay += PRICE_LIST[ingredient_idx].price
+			memcpy(sandwich->ingredients[i].name, PRICE_LIST[ingredient_idx].name, MAX_INGREDIENT_NAME_LEN);
+			sandwich->ingredients[i].price = PRICE_LIST[ingredient_idx].price;
 			break;
 		}
 	}
+	puts("< How should we name it?\n");
+	sandwich->codename = malloc(32);
+	scanf("%31s", sandwich->codename);
+	return sandwich;
+}
 
+void add_custom() {
+	if (INGREDIENTS_COUNT + 1 > 255) {
+		puts("< Sorry! Too many custom ingredients!\n");
+		return;
+	}
+
+	puts("< You want something custom? Sure, what's the name?\n");
+	printf("> ");
+	scanf("%15s", PRICE_LIST[INGREDIENTS_COUNT].name);
+
+	puts("< And the price?");
+	printf("> ");
+	scanf("%hhu", &PRICE_LIST[INGREDIENTS_COUNT].price);
+	INGREDIENTS_COUNT++;
+}
+
+void eat(sandwich_t *sandwich) {
+	sandwich->taste_function();
 }
 
 void option_menu() {
 	char *options[] = {
-		"Order Sandwich"
-		"Check Order Number",
+		"Order sandwich",
+		"Add custom ingredient",
+		"Eat",
 		"Tell the cashier Subway is better",
-		"Convert money",
 		"Exit",
 	};
 
@@ -57,36 +112,31 @@ void option_menu() {
 	}
 }
 
-
-
 int main() {
 	int choice;
+	sandwich_t *sandwich = NULL;
 
 
 	puts("< Welcome to .hidden hacker sandwiches! How may I help you today?");
-	puts("< Oh, just so you know, the order screen is broken, it won't update unless you press the 'Check Order' button.");
-	puts("< Also, we only accept US dollars here.");
 
 	while (1) {
 		option_menu();
-		printf("Choose option: ");
+		printf("\nChoose option: ");
 		scanf("%d", &choice);
 		switch (choice) {
 			case 1:
-				order_sandwich();
+				sandwich = order_sandwich();
 				break;
 			case 2:
-				check_order();
+				add_custom();
 				break;
 			case 3:
-				puts("< Uhhh.. Alright, anything else I can do for you?");
+				if (sandwich) eat(sandwich);
+				else puts("< Dude... You haven't ordered anything!\n");
 				break;
 			case 4:
-				convert();
+				puts("< Uhhh.. Alright, anything else I can do for you?\n");
 				break;
-			case 5:
-				puts("< Happy hacking!");
-				return 0;
 			default:
 				puts("No such choice!");
 				break;
@@ -94,31 +144,3 @@ int main() {
 	}
 }
 
-
-void menu() {
-
-}
-
-int main() {
-	int choice;
-
-	while (1) {
-		menu();
-		printf("Choose option: ");
-		scanf("%d", &choice);
-		switch (choice) {
-			case 1:
-				notes_create();
-				break;
-			case 2:
-				notes_read();
-				break;
-			case 3:
-				return 0;
-			default:
-				puts("No such choice!");
-				break;
-		}
-	}
-	return 0;
-}
