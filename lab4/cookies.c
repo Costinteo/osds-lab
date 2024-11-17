@@ -8,7 +8,7 @@
 
 
 bool riddle() {
-   const char* riddle = "In the dark I sing, though I’m not heard by all, I warn of a danger, a silent deadly call. In coal mines I dwell, where miners are near, If I fall, their lives could disappear.";
+   const char* riddle = "In the dark I sing, though I’m not heard by all, I warn of a danger, a silent deadly call. In coal mines I dwell, where miners are near, if I fall, their lives could disappear.";
 
    char input[30];
    char temp;
