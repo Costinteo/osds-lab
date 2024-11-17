@@ -14,6 +14,10 @@ ex2:
 
 cookies:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc -w cookies.c -o ./bin/cookies
+	gcc cookies.c -o ./bin/cookies -g
+  
+bite:
+	@if [ ! -d ./bin ]; then mkdir bin; fi
+	gcc bite.c -o ./bin/bite -g
 
 
