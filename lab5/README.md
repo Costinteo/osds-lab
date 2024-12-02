@@ -142,6 +142,9 @@ Write a pwntools exploit to get a shell.
 
 * Read the paper. Link in the introduction of this lab.
 * Check the [slides](https://docs.google.com/presentation/d/1uVpV-RMxSOrWgWnhoMTHsLhiAM6Vpz8DGrt0YNHeQcY/edit?usp=sharing) from the course.
+* Heap chunks contain metadata that is used by the allocator.
+If your overflow crashes the program, make sure you don't overwrite values right before the chunks.
+Keep the same values for the metadata as seen at runtime.
 * There's an extra "challenge" once you manage to call `system()`. Figure out how the input to `system()` can be exploited.
 * Might be quite hard, ask for hints if you get stuck.
 
