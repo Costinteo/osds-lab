@@ -43,7 +43,7 @@ Similarly, the IBT component of CET implements very *coarse-grained* control-flo
 This means that, although addresses to ROP gadgets cannot be used any longer to overwrite function pointers, corruption can still lead to arbitrary function calls, because all functions start with the newly-added `endbr64`, or `endbr32` instructions.
 Techniques in which exploitation chains function calls, instead of ROP gadgets, exist. In modern academic research, such techniques make notable appearances in papers such as the one by **Schuster et al.** [[PDF](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7163058)], titled _Counterfeit Object-Oriented Programming_, or articles such as the one published in _Phrack_ Volume 0x10, Issue 0x47, by **LMS**, [[LINK](https://phrack.org/issues/71/7.html#article)], titled _Bypassing CET & BTI With Functional Oriented Programming_.
 
-**IMPORTANT!** For the exercises in this lab, we will be bypassing Intel CET with techniques listed above. Since not everyone has the hardware capability for Intel CET and the operating system support for CET is limited as of writing this, we'll be using the [_Intel Software Development Emulator_](https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html). You can download it and unpack it through the UI, or with the following commands. Note that versions for the emulator might change, and links my die. Use the UI if the method below stops working.
+**IMPORTANT!** For the exercises in this lab, we will be bypassing Intel CET with techniques listed above. Since not everyone has the hardware capability for Intel CET and the operating system support for CET is limited as of writing this, we'll be using the [_Intel Software Development Emulator_](https://www.intel.com/content/www/us/en/download/684897/intel-software-development-emulator.html). You can download it and unpack it through the UI, or with the following commands. Note that versions for the emulator might change, and links might die. Use the UI if the method below stops working.
 
 ```
 $ wget https://downloadmirror.intel.com/831748/sde-external-9.44.0-2024-08-22-lin.tar.xz
@@ -127,7 +127,8 @@ Thus, when the indirect call target is resolved above, it can resolve to any oth
 
 Run `make ex2` to build the exercise. Use the Intel SDE to run the binary (see important notices above).
 
-Intel CET is enabled for this binary, which means buffer overflows won't be able to hijack return addresses. 
+Intel CET is enabled for this binary, which means all indirect call targets have to point correctly to the beginning of a function.
+Using COOP, it is guaranteed that this restriction will be respected.
 
 **[Q4]**: Explore the program. What does it do? Where is the vulnerability?
 
