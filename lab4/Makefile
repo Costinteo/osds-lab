@@ -10,14 +10,14 @@ ex1:
 
 ex2:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc ex2.c -o ./bin/ex2 -zlazy -g
+	gcc  ex2.c -o ./bin/ex2 -zlazy -pie -fstack-protector-all -g
 
 cookies:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc cookies.c -o ./bin/cookies -g
+	gcc cookies.c -o ./bin/cookies -fstack-protector-all -g
   
 bite:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc bite.c -o ./bin/bite -g
+	gcc bite.c -o ./bin/bite -pie -fstack-protector-all -znow -g
 
 

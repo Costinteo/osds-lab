@@ -3,5 +3,5 @@
 3. return 2 libc + ASLR + ROP
 4. ROP + advanced ASLR bypass + canaries?
 5. ??? <--- fop/coop
-6. cache attacks???
+6. cache attacks??? or some heap vuln classes
 7. ??? <-- rowhammer mock-up + misc (maybe cabbage) + SROP
