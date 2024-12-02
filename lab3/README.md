@@ -48,6 +48,8 @@ For exercise 1 we have a flying course, courtesy of *.hidden airlines*. Also, th
 
 Anyways, check your booking information in `ex1.c`. I am not sure you have a ticket. Make sure you have ASLR turned off using `../util/toggle-aslr.sh`. Also, compile with `make ex1`.
 
+This program can be solved with ROP gadgets as well, but I would prefer that you solve it without them.
+
 **[Q2]**: Explore the program. What does it do? Where is the vulnerability?
 
 **[Q3]**: How does ret2libc fit into this? What are some nice libc functions for exploitation?
@@ -58,9 +60,11 @@ Write a *pwntools* exploit to get a shell on `ex1`.
 
 **Hints**:
 
-* Think very carefully about *what* you control.
+* Think very carefully about *what* you control. Check with a debugger.
 * Source code is misleading, use the debugger to confirm program states.
 * Always keep the calling convention in mind!
+* Read the `scanf()` manual. When does the `%s` format stop reading? Does your payload contain that?
+* Check for stack misalignment if it crashes. Think what instructions affect the stack, what if you jump over some?
 * This one might be a bit hard, but don't give up! Ask for help if it feels impossible. Theorycraft with your colleagues, come up with ideas.
 
 ## Exercise 2 - Glade of Dreams
