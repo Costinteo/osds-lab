@@ -10,7 +10,7 @@ ex1:
 
 ex2:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc ex2.cpp -o ./bin/ex2 -fcf-protection=full -fno-stack-protector -pie -zrelro -g
+	g++ ex2.cpp -o ./bin/ex2 -fcf-protection=full -fno-stack-protector -no-pie -zrelro -g
 
 puzzle:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
