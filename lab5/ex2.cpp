@@ -47,6 +47,10 @@ public:
 
 int Project::totalProjectCount = 0;
 
+void logRelease(char *msg) {
+	FILE *f = fopen("./releaseLog.txt", "r");
+	fputs(msg, f);
+}
 void announceUsers(char *msg) {
 	char cmd[128];
 	sprintf(cmd, "wall '%s'", msg);
@@ -65,7 +69,7 @@ int main() {
 	Employee *workers[] = {e1, e2, e3, nullptr};
 
 	Project *p = new Project(workers);
-	p->registerCallback(announceUsers);
+	p->registerCallback(logRelease);
 
 	char newName[256];
 	puts("Insert name for new employee:");
