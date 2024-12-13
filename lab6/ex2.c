@@ -170,7 +170,7 @@ int main() {
                 break;
             }
 
-            character_see_stats(characters[which]);
+            character_see_stats(characters[which-1]);
             break;
         default:
             puts("wrong option");

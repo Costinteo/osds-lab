@@ -87,6 +87,8 @@ Write a *pwntools* exploit to get a shell on `ex1`.
 
 ## Exercise 2 - Metin 2 Text Adventure
 
+Challenge was contributed by [zenbassi](https://github.com/stefan-radu).
+
 Title is self-explanatory. Find the vuln, get the Metin stone.
 
 Run `make ex2` to build the exercise.
