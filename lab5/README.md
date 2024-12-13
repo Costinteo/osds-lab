@@ -68,6 +68,11 @@ target = process("./sdekit/sde64 -no-follow-child -cet -cet_output_file /dev/nul
 # exploit the world here
 ```
 
+Also, when **debugging**, this can hinder you. Try debugging the program normally and after you have a solution try it with the emulator on.
+There should be a way to debug it as well, but I haven't had the time to look into it, please tell me if you manage to do so!
+
+Basically, you just have to make sure you don't overwrite any return addresses and that any function pointers you overwrite point to the beginning of a function containing the `endbr64` instruction.
+
 ## Exercise 1 - Doctor's Weird Appointments
 
 _There's a bunch of weird appointments coming in the doctor's office, but priority is hard to establish. Can you look over them and see which is more important?_
@@ -88,7 +93,7 @@ Write a *pwntools* exploit to get a shell on `ex1`.
 **Hints**:
 
 * Data on the stack has different types. Learn how those types are manipulated at lower level, in the assembly.
-* You're going to need a leak of heap, because it's randomized by ASLR. You can reliably find positions of objects on the heap given deterministic program traces.
+* You're going to need to leak a heap address, because it's randomized by ASLR. You can reliably find positions of objects on the heap given deterministic program traces.
 Basically, if a program runs the same way every time, then objects on the heap will be found at the same offsets.
 * Use the `heap chunks` command to see heap chunks. You can also _examine_ their contents using the gdb `x/...` (examine) command.
 The `gef` plugin has some nicer visualization for heap chunks, but you can just use the examine command to get the same on `pwndbg`.

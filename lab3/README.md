@@ -62,9 +62,10 @@ Write a *pwntools* exploit to get a shell on `ex1`.
 
 * Think very carefully about *what* you control. Check with a debugger.
 * Source code is misleading, use the debugger to confirm program states.
-* Always keep the calling convention in mind!
+* Always keep the calling convention for x64 in mind! Make sure you are not looking at the x86 calling convention.
 * Read the `scanf()` manual. When does the `%s` format stop reading? Does your payload contain that?
 * Check for stack misalignment if it crashes. Think what instructions affect the stack, what if you jump over some?
+* Debug until the `ret` that you are going to hijack. What do you control? Check the stack, the registers, etc.
 * This one might be a bit hard, but don't give up! Ask for help if it feels impossible. Theorycraft with your colleagues, come up with ideas.
 
 ## Exercise 2 - Glade of Dreams
@@ -110,7 +111,7 @@ Write a pwntools exploit to get a shell.
 
 **Hints**:
 
-* Always keep the calling convention in mind!
+* Always keep the calling convention for x64 in mind! Make sure you are not looking at the x86 calling convention.
 * Some parts of the program can be red herrings. But they could give you ideas of how to exploit it.
 * The `__attribute__` mess is really there so the compiler can generate some specific ROP gadgets.
 * Ask for help if stuck.
