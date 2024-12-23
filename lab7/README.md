@@ -32,11 +32,12 @@ Write a *pwntools* exploit to get a shell.
 * Writing to memory through `/proc/self/mem` bypasses all segment protections. So even if a segment is `r--` you can still write to it.
 * Read a writeup for *Flipper*, [here is one](https://dothidden.xyz/glacierctf_2024/flipper/) from .hidden.
 
-## Exercise 3 - Signal-Return Oriented Vibes
+## Exercise 3 - Signal-Return Oriented Jailbreak
 
-No `pop rdi; ret`, can't ROP your way out of this one, hacker!
+You've been accused of *serious hacking crimetivity*! Guilty on all charges, you are sent to the Hacker Isolation Chamber.
+Forget about escaping this one, there's barely any instructions to work with!
 
-Use `make ex3` to build the exercise.
+Use `make ex3` to build the exercise. You're going to need `nasm`.
 
 Write a *pwntools* exploit to get a shell.
 

@@ -12,3 +12,8 @@ ex2:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
 	gcc ex2.c -o ./bin/ex2 -no-pie -zlazy -g
 
+ex3:
+	@if [ ! -d ./bin ]; then mkdir bin; fi
+	nasm -f elf64 -o /tmp/ex3.o ex3.asm
+	ld -o ./bin/ex3 /tmp/ex3.o
+
