@@ -21,6 +21,8 @@ Write a *pwntools* exploit to get the contents of `./flag.txt` printed.
 
 Rowhammer is useless! You can only flip one bit! You can't exploit anything with that, can you? *Can you?*
 
+![padme](../img/padme.png)
+
 Greatly inspired by *Flipper* from *GlacierCTF 2023*.
 
 Use `make ex2` to build the exercise.
