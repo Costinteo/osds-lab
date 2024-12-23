@@ -112,4 +112,4 @@ Keep the same values for the metadata as seen at runtime. *Sometimes it works wi
 
 Coding challenge for this one:
 
-1. **Contribute to Open-Source Software!** -- Do you like contributing? Did you see how `gef` has nice heap chunk visualization and `pwndbg` does not also print the content? How about porting that functionality over? `pwndbg` is very friendly to new contributors!
+1. **Contribute to Open-Source Software!** -- Do you like contributing? Did you see how `gef` has nice heap chunk visualization and `pwndbg` does not also print the content? How about porting that functionality over? `pwndbg` is very friendly to new contributors and this feature should be quite straight-forward and easy to do. Give me a message if you are unsure how to start!

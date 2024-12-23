@@ -36,7 +36,7 @@ void func() {
 ```
 
 The code is simple, `buf` can be overflown through the `gets()` function call. When CFI is enforced, this overflow won't be able to control RIP.
-But it gives attackers a powerful arbitrary read primitive, by allowing them to overwrite the initial `ptr` pointer with any address they wish, instead of the initial value, `MESSAGE_PTR`.=
+But it gives attackers a powerful arbitrary read primitive, by allowing them to overwrite the initial `ptr` pointer with any address they wish, instead of the initial value, `MESSAGE_PTR`.
 Thus the integrity of the shadow stack is preserved, but exploitation still occurs. The expressiveness of such attacks is discussed by **Hu et al.** [[PDF](https://www.comp.nus.edu.sg/~prateeks/papers/DOP-TC.pdf)].
 
 Similarly, the IBT component of CET implements very *coarse-grained* control-flow integrity mechanisms - allowing any indirect control-flow transfer to land at the beginning of any marked function.
