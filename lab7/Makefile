@@ -8,3 +8,7 @@ ex1:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
 	gcc ex1.c -o ./bin/ex1 -pie -g
 
+ex2:
+	@if [ ! -d ./bin ]; then mkdir bin; fi
+	gcc ex2.c -o ./bin/ex2 -no-pie -zlazy -g
+

@@ -17,9 +17,11 @@ Write a *pwntools* exploit to get the contents of `./flag.txt` printed.
 * Read the manual for interesting functions very carefully.
 * Make sure you understand what the `setup()` does very well.
 
-## Exercise 2 - Wannabe Rowhammer
+## Exercise 2 - Fliphammer
 
 Rowhammer is useless! You can only flip one bit! You can't exploit anything with that, can you? *Can you?*
+
+Greatly inspired by *Flipper* from *GlacierCTF 2023*.
 
 Use `make ex2` to build the exercise.
 
@@ -28,6 +30,7 @@ Write a *pwntools* exploit to get a shell.
 **Hints**:
 * Usually, when you have limitations, you should figure out how to get rid of them.
 * Writing to memory through `/proc/self/mem` bypasses all segment protections. So even if a segment is `r--` you can still write to it.
+* Read a writeup for *Flipper*, [here is one](https://dothidden.xyz/glacierctf_2024/flipper/) from .hidden.
 
 ## Exercise 3 - Signal-Return Oriented Vibes
 
