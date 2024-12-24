@@ -5,3 +5,4 @@ test.c
 solve_*
 sdekit
 *.tar*
+flag.txt
