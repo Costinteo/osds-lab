@@ -7,6 +7,8 @@ clean:
 ex1:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
 	gcc ex1.c -o ./bin/ex1 -pie -g
+	echo 'osds{congrats_you_flagged_it!}' > ./flag.txt
+	chmod 444 ./flag.txt
 
 ex2:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
