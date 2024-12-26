@@ -36,7 +36,7 @@ Write a *pwntools* exploit to get a shell.
 * Writing to memory through `/proc/self/mem` bypasses all segment protections. So even if a segment is `r--` you can still write to it.
 * Read a writeup for *Flipper*, [here is one](https://dothidden.xyz/glacierctf_2024/flipper/) from .hidden.
 
-## Exercise 3 - Signal-Return Oriented Jailbreak [2p]
+## Exercise 3 - Signal-Return Oriented Jailbreak [3.5p]
 
 You've been accused of *serious hacking crimetivity*! Guilty on all charges, you are sent to the Hacker Isolation Chamber.
 Forget about escaping this one, there's barely any instructions to work with!
@@ -49,7 +49,7 @@ Write a *pwntools* exploit to get a shell.
 
 * Read the title.
 
-## Exercise 4 - Magishian [1.5p]
+## Exercise 4 - Magishian [2p]
 
 *In the beginning, there was magic. Prove your might.*
 
