@@ -19,3 +19,8 @@ ex3:
 	nasm -f elf64 -o /tmp/ex3.o ex3.asm
 	ld -o ./bin/ex3 /tmp/ex3.o
 
+ex4:
+	@if [ ! -d ./bin ]; then mkdir bin; fi
+	gcc dummy.c -o ./bin/dummy -g
+	gcc ex4.c -o ./bin/ex4 -g
+
