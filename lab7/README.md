@@ -34,7 +34,7 @@ Write a *pwntools* exploit to get a shell.
 
 * Usually, when you have limitations, you should figure out how to get rid of them.
 * Writing to memory through `/proc/self/mem` bypasses all segment protections. So even if a segment is `r--` you can still write to it.
-* Read a writeup for *Flipper*, [here is one](https://dothidden.xyz/glacierctf_2024/flipper/) from .hidden.
+* Read a writeup for *Flipper*, [here is one](https://dothidden.xyz/glacierctf_2023/flipper/) from .hidden.
 
 ## Exercise 3 - Signal-Return Oriented Jailbreak [3.5p]
 
