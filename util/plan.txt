@@ -1,0 +1,17 @@
+Plans for next year:
+- incorporate feedback
+- stricter deadlines
+- more hints
+- change point distribution
+- less leniency when copied solutions are clearly not known
+- less time spent correcting
+- add guidelines and external materials
+
+experimental:
+- auto-generating challenges + flags?
+- remotely hosted challs?
+
+feedback:
+- lab too hard
+- maybe add solutions for a simpler exercise just to show off what is expected
+this could be good or it could be bad - it cuts off the thinking part of the challenge as you just apply a pattern
