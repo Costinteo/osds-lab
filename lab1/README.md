@@ -8,40 +8,34 @@ When managing the memory of a computer, the operating system uses a technique ca
 ## Exercise 1 - Inspecting Virtual Memory
 
 Let's see how a program is loaded into memory from disk. On Linux, executables are usually in the Executable and Linkable Format (ELF). On Windows, the usual format is called Portable Executable (PE). Both have metadata that instructs the operating system how to read and find each part of a program, like data or executable instructions. The data and metadata are kept in *sections*. Some of the most common and interesting sections of an ELF file are:
-* .bss -- containing global variables that are uninitialized, or are initialized with zero.
-* .data -- containing global variables that are initialized.
-* .rodata -- containing read-only data, like constants and strings.
-* .text -- containing executable instructions (bytecode).
+* `.bss` -- containing global variables that are uninitialized, or are initialized with zero.
+* `.data` -- containing global variables that are initialized.
+* `.rodata` -- containing read-only data, like constants and strings.
+* `.text` -- containing executable instructions (bytecode).
 
-If you wish to look at some beautiful dissections of ELF or PE, check out [corkami's pics](https://github.com/corkami/pics). Here's the [ELF dissection](https://github.com/corkami/pics/blob/master/binary/elf101/elf101.pdf) and the [PE dissection](https://raw.githubusercontent.com/corkami/pics/master/binary/pe101/pe101-64.png).
+If you wish to look at some beautiful dissections of ELF or PE, check out corkami's pics[^1]. Here's the [ELF dissection](https://github.com/corkami/pics/blob/master/binary/elf101/elf101.pdf) and the [PE dissection](https://raw.githubusercontent.com/corkami/pics/master/binary/pe101/pe101-64.png).
 
-Compile `ex1.c` with `make ex1`. The source code is basically just an infinite loop, so we can inspect the process that spawns when running the program. To inspect the process, we require some way to attach to it, like a debugger. For all the labs presented we will make extended use of good ol' `gdb`. You will learn how to use it efficiently to inspect processes and craft exploits. Fortunately, we're not crazy, we will be using a modernized version of it. There are 2 main well-known and used plugins that modernize gdb for exploitation:
+Compile `ex1.c` with `make ex1` and then run it with `./bin/ex1`. The source code is basically just an infinite loop, which allows us to easily attach to the running process with a debugger in order to further inspect and instrument it. For all the labs presented we will make extended use of good ol' `gdb`. You will learn how to use it efficiently to inspect processes and craft exploits. Although very powerful, `gdb` in its default form is quite ugly and tedious to use. Fortunately, we're not crazy, so we will be using a modernized version of it. There are 2 main well-known and used plugins that modernize `gdb` for exploitation:
 * [GDB Enhanced Features (GEF)](https://github.com/hugsy/gef)
 * [pwndbg](https://github.com/pwndbg/pwndbg)
 
-Both of them are great and pretty similar to each other. You are free to choose whatever you wish, but I personally recommend `pwndbg`, as it has a bit more features. It has its disadvantages, it can be a bit more bloated and it has a lot of on-screen information.
+Both of them are great and pretty similar to each other. You are free to choose whatever you wish, but I personally recommend `pwndbg`, as it has a bit more features, but can feel bloated since it shows a lot of on-screen information.
 
-You can install `GEF` with *one* of the following:
+To install `GEF` choose only **ONE** of the following                                                                               :
 
 ```
-# via the install script
 ## using curl
 $ bash -c "$(curl -fsSL https://gef.blah.cat/sh)"
 
+########
+## OR ##
+########
+
 ## using wget
 $ bash -c "$(wget https://gef.blah.cat/sh -O -)"
-
-# or manually
-$ wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
-$ echo source ~/.gdbinit-gef.py >> ~/.gdbinit
-
-# or alternatively from inside gdb directly
-$ gdb -q
-(gdb) pi import urllib.request as u, tempfile as t; g=t.NamedTemporaryFile(suffix='-gef.py'); open(g.name, 'wb+').write(u.urlopen('https://tinyurl.com/gef-main').read()); gdb.execute('source %s' % g.name)
-
 ```
 
-You can install `pwndbg` with the bundled install script:
+To install `pwndbg`, run the bundled install script:
 
 ```
 $ git clone https://github.com/pwndbg/pwndbg
@@ -49,7 +43,18 @@ $ cd pwndbg
 $ ./setup.sh
 ```
 
-After installing, make sure you have compiled the exercise with `make ex1` and are running it.
+If you chose to install both `gdb` and `pwndbg`, make sure only one of them is active at a time. Both plugins are essentially just python scripts, which are sourced in the `.gdbinit` file. Open your `.gdbinit` file and comment out one of the pluggins to disable it. 
+
+For example, if you installed **both** plugins, but you choose to use `gef`, your `.gdbinit` should look like this:
+
+```sh
+source ~/.gef-2025.01.py
+# source /usr/share/pwndbg/gdbinit.py
+```
+
+---
+
+After installing, make sure you have compiled the exercise with `make ex1`, and you run it with `./bin/ex1`.
 
 Then open a new terminal (or a terminal tab) and attach to the process:
 
@@ -71,6 +76,7 @@ Starting program: /home/costinteo/Programming/osds-lab/lab1/bin/ex1
 Depending on whether you chose `GEF` or `pwndbg`, you might be seeing the current state of the process, with its registers, disassembly of the current instructions, etc... If you don't see it, try out the `context` command.
 
 You can type `vmmap` to check out the virtual memory mapping. You should see something like this, but colored nicely:
+
 ```
              Start                End Perm     Size Offset File
           0x400000           0x401000 r--p     1000      0 /bin/ex1
@@ -97,9 +103,10 @@ You can type `vmmap` to check out the virtual memory mapping. You should see som
     0x7ffd7592f000     0x7ffd75950000 rw-p    21000      0 [stack]
 0xffffffffff600000 0xffffffffff601000 --xp     1000      0 [vsyscall]
 ```
+
 You can also access this information in the `proc` filesystem, that holds data on processes. Check out `/proc/$(pgrep ex1)/maps`.
 
-So what are we looking at? The ELF sections mentioned earlier are mapped into *segments* of memory, marked with different protections based on the needs of each section. For example, `.rodata` will be mapped into a segment protected with read-only permissions. On the other hand, `.data` and `.bss` will be mapped into the same segment, protected with read-write permissions. You can see the file that is mapped in memory in each segment.
+So what are we looking at? The ELF sections mentioned earlier are mapped into *segments* of memory, marked with different protections based on the _minimal_ [^2] needs of each section. For example, `.rodata` will be mapped into a segment protected with read-only permissions. On the other hand, `.data` and `.bss` will be mapped into the same segment, protected with read-write permissions. You can see the file that is mapped in memory in each segment.
 
 **[Q1]**: Where is each section mapped? You can try using the `search` command in `pwndbg` (or `search-pattern` in `GEF`) to search for contents such as the string `Where is this located?` found in the source file `ex1.c`. That will help you determine where each section is. Experiment with more types by changing the source code and recompiling.
 
@@ -107,23 +114,23 @@ Additionally, try searching for other ways of matching memory segments with sect
 
 **[Q2]**: Try finding the address of `bar()` in gdb and printing its disassembly.
 
-What about the other files in `vmmap`? You are for sure familiar with the concepts of *libraries*. Most of the other segments are mapped libraries, but there are also some other special memory segments, like the `stack` or the `heap`, which are not actually filled up with useful values all the time. The other segments are all mapped from files, while these special segments have their memory reserved for *dynamic use*. All these segments are actually allocated using the [mmap](https://www.man7.org/linux/man-pages/man2/mmap.2.html) syscall. We'll talk about the `stack` and the `heap` later. First, let's have some fun with `mmap`.
+What about the other files in `vmmap`? You might quickly notice the `libc` library[^3]. Most of the other segments are mapped libraries, but there are also some other special memory segments, like the `stack` or the `heap`, which are not actually filled up with useful values all the time. The other segments are all mapped from files, while these special segments have their memory reserved for *dynamic use*. All these segments are actually allocated using the [mmap](https://www.man7.org/linux/man-pages/man2/mmap.2.html) syscall. We'll talk about the `stack` and the `heap` later. First, let's have some fun with `mmap`.
 
 ## Exercise 2 - Baby's first executable loader
 
-Quick reminder: When we are talking about executable instructions, we are talking about "bytecode" -- a sequence of bytes that the CPU reads and executes. All executable code on the computer gets at some point or another translated to this bytecode, as it's the only thing the CPU understands. Essentially, all high-level languages need to be translated to this. Usually, the *compilation process* does this, going from high level language (C) --(to)--> low level language (assembly) --(to)--> bytecode. For the course and lab, we are mostly going to use the x86\_64 architecture as a backbone for everything we do. If you need to know anything about its assembly language, I recommend the [Intel Software Developer's Manual](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) and a site for looking up instruction mnemonics easier, like [this one](https://www.felixcloutier.com/x86/).
+Quick reminder: When we are talking about executable instructions, we are talking about _"bytecode"_ -- a sequence of bytes that the CPU reads and executes. All executable code on the computer gets at some point or another translated to this bytecode, as it's the only thing the CPU understands. Essentially, all high-level languages need to be translated to this. Usually, the *compilation process* does this, going from high level language (C) --(to)--> low level language (assembly) --(to)--> bytecode. For the course and lab, we are mostly going to use the x86\_64 architecture as a backbone for everything we do. If you need to know anything about its assembly language, I recommend the [Intel Software Developer's Manual](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) and a site for looking up instruction mnemonics easier, like [this one](https://www.felixcloutier.com/x86/).
 
 ![compilation process](../img/compilation_process.png)
 
-The reverse of the compilation process (assembly -> high-level language) is called *decompilation*. The reverse of the assembly process (bytecode -> assembly) is called *disassembly*.
+The reverse of the compilation process (assembly -> high-level language) is called *decompilation* and can be achieved with tools such as [Ghidra](https://github.com/NationalSecurityAgency/ghidra). The reverse of the assembly process (bytecode -> assembly) is called *disassembly* and can be achieved with tools such as `objdump`.
 
 Executable files are parsed by a program called a *loader*. In Linux, the ELF loader is implemented in the kernel (specifically in `fs/binfmt_elf.c`, [link here](https://elixir.bootlin.com/linux/latest/source/fs/binfmt_elf.c)). Basically, by looking at the ELF header and metadata, a loader can properly map the files in memory. We can create a mock-up of that -- let's open an executable file, find the offset for a function, allocate an executable region with `mmap` and then copy the bytes for the function to the executable region and jump to it.
 
 Here are some tips on how to do it:
-* You can find offsets to certain functions with `objdump -d binary name -F`. `-F` is for printing file offsets.
+* You can find offsets to certain functions with `objdump -d binary name -F`. `-F` is for printing file offsets; `objdump` is a very useful tool which you may reach out to again and again, so consider checking out its man page by running `man objdump`
 * You can also open an executable with `gdb` and print the address for the function. Then you can subtract the address that the file is starting to be mapped at. For example, if `foo()` is at `0x401337` and the start of the file in memory is `0x400000`, then `foo()` is at offset `0x1337` from the beginning of the file.
-* You can open a file with `fopen()` and go to that offset to start copying the amount of bytes needed for the function.
-* Allocate an executable region with `mmap`. Don't forget to set the right protections, check the man page.
+* Allocate an executable region with `mmap`. Don't forget to set the right protections, check the man page by running `man 2 mmap`!
+* You can open a file with `fopen()`, call `fseek` in order to _go_ to that offset and then copy the amount of bytes needed for the function into the mmapped memory region.
 * Jump to the code and execute.
 * Compile `dummy.c` and then you can use `./bin/dummy`. Copy the `foo()` function.
 * You can also `mmap` the file directly in memory if you're cool ;)
@@ -136,9 +143,9 @@ To see each line of assembly being executed by `foo()`, you can step into the fu
 
 ## Exercise 3 - Stacks, calling conventions and mind controlling execution
 
-What's up with stacks? You might have already seen the *stack* printed in the `GEF` and `pwndbg` context. Variables you declare in functions are allocated on the stack segment, as you've probably learnt in your Computer Architecture classes. The stack is important for managing each function's *frame* and maintaining control flow data essential for program execution. What does that mean? Whenever you call a function directly, the generated assembly instruction is `call` ([man here](https://www.felixcloutier.com/x86/call)). When executed, this instruction automatically pushes the next instruction's address on the stack. At the end of each function, there is a high chance of encountering a `ret` (return) instruction, that automatically pops this return address and moves execution to it. The expression "*moving execution*" refers to changing the value of the `RIP` register. The CPU has multiple very fast storage units called *registers*. You can think of them as variables. Some of them are normal and used for operations, some have special properties. One of these special ones is `RIP`, or the `Instruction Pointer`, that can only be changed through control flow instructions -- like `call`, or `ret`, or `jmp`!
+What's up with stacks? You might have already seen the *stack* printed in the `GEF` and `pwndbg` context. Local variables (i.e. declared inside a function) are allocated on the stack segment, as you've probably learnt in your Computer Architecture classes. The stack is important for managing each function's *frame* and maintaining control flow data essential for program execution. What does that mean? Whenever you call a function directly, the generated assembly instruction is `call` ([man here](https://www.felixcloutier.com/x86/call)). When executed, this instruction automatically pushes the next instruction's address on the stack. At the end of each function, there is a high chance of encountering a `ret` (return) instruction, that automatically pops this return address and moves execution to it (i.e. changes the value of the `RIP` register to the value of the return address). The CPU has multiple very fast storage units called *registers*. You can think of them as variables. Some of them are normal and used for operations, some have special usecases. One of these special ones is `RIP`, or the `Instruction Pointer`, which points to the assembly instruction currently being executed. The `RIP` regsiter can only be changed through control flow instructions -- like `call`, or `ret`, or `jmp`!
 
-Additionally, whenever the compiler sees a function call, it must generate assembly that follows the *calling convention* of the system. That's just an agreement of how to pass arguments and who cleans up the stack frame. Ideally, every function call should leave the stack in the same way it was before the call. Below you can see an explanation of how the calling convention for Linux x86\_64 works:
+Additionally, whenever the compiler sees a function call, it must generate assembly that follows the *calling convention*[^4] of the system. That's just an agreement of how to pass arguments and who cleans up the stack frame. Ideally, every function call should leave the stack in the same way it was before the call. Below you can see an explanation of how the calling convention for Linux x86\_64 works:
 
 ![calling convention](../img/calling_convention.png)
 
@@ -152,7 +159,7 @@ mov rdx, c;
 call bar;
 ```
 
-Take a look at `ex3.c`. Compile it with `make ex3` and check out its disassembly.
+Take a look at `ex3.c`. Compile it with `make ex3` and check out its disassembly -- you can also use `objdump` for this.
 
 **[Q4]**: Can you identify the arguments of a function call in the disassembly?
 
@@ -167,3 +174,10 @@ Each lab will also have some extra fun challenges that expand on each exercise, 
 1. **Filesystem Crawler** -- Check out what other things the `/proc/` filesystem offers. Some of the stuff there can be really helpful in exploitation. Can you find an information leak that could be useful in a web exploitation context?
 2. **ELF Pro** -- Try writing an ELF parser for the header and some metadata (like sections), following the [format specification](https://flint.cs.yale.edu/cs422/doc/ELF_Format.pdf). There are already [some structures](https://www.man7.org/linux/man-pages/man5/elf.5.html) in Linux that can help you out.
 3. **Control-flow Trickster** -- Can you call a more interesting function, that is not even in the source code? How can you do it without setting `RIP` directly?
+
+----
+
+[^1]: https://github.com/corkami/pics
+[^2]: https://en.wikipedia.org/wiki/Principle_of_least_privilege
+[^3]: https://en.wikipedia.org/wiki/Library_(computing)
+[^4]: https://en.wikipedia.org/wiki/X86_calling_conventions#System_V_AMD64_ABI
