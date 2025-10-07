@@ -50,6 +50,7 @@ If you have questions about understanding a specific thing, or you are stuck som
 * [GDB Cheatsheet](https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf)
 * [pwndbg Cheatsheet](https://pwndbg.re/CheatSheet.pdf)
 * [Computer Architecture Primer](https://youtu.be/L1ung0wil9Y) - everything up to min 47 is directly applicable to the lab.
+* [Godbolt](https://godbolt.org/) - great tool for learning assmebly; write C on the left and try to understand how it gets compiled into assembly; try various optimization flags (none, O1, O2, O3).
 * [Great playlist from LiveOverflow](https://youtu.be/6jSKldt7Eqs?list=PLhixgUqwRTjxglIswKp9mpkfPNfHkzyeN) - popular security youtuber, this video is about x64 assembly and the stack.
 	The playlist has plenty of other videos that can help you! But watch out - most other videos showcase the 32 bits calling convention, which passes parameters on the stack, unlike x64 which first uses the registers. We use 64 bits at the lab!
 * [Codebending .hidden presentation](https://docs.google.com/presentation/d/1H1jfutKSter7UFtRmciRgn3QCBCej-o84l6MS-XXMvQ) - the slides showcase how instructions affect RBP, RSP and RIP.
