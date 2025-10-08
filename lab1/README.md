@@ -43,7 +43,7 @@ $ cd pwndbg
 $ ./setup.sh
 ```
 
-If you chose to install both `gdb` and `pwndbg`, make sure only one of them is active at a time. Both plugins are essentially just python scripts, which are sourced in the `.gdbinit` file. Open your `.gdbinit` file and comment out one of the pluggins to disable it. 
+If you chose to install both `gdb` and `pwndbg`, make sure only one of them is active at a time. Both plugins are essentially just python scripts, which are sourced in the `~/.gdbinit` file. Open your `~/.gdbinit` file and comment out one of the plugins to disable it. 
 
 For example, if you installed **both** plugins, but you choose to use `gef`, your `.gdbinit` should look like this:
 
