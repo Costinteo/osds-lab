@@ -10,6 +10,6 @@ ex1:
 
 ex2:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc ex2.c -o ./bin/ex2 -no-pie -g
+	gcc ex2.c -std=c99 -o ./bin/ex2 -no-pie -g
 
 

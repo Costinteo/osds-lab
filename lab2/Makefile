@@ -8,7 +8,7 @@ clean:
 
 ex4:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
-	gcc ex4.c -std=c90 -o ./bin/ex4 ${FLAGS} -zexecstack
+	gcc ex4.c -std=c99 -o ./bin/ex4 ${FLAGS} -zexecstack
 
 %:
 	@if [ ! -d ./bin ]; then mkdir bin; fi
