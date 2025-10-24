@@ -30,7 +30,7 @@ Simply put, a buffer overflow is when you try to copy more data into a memory lo
 For the first exercise (`ex1.c`), we will be using the scenario you imagined at the previous question. The stack contains a variable that maintains the admin status of the current user. A user is made admin only if they know a secret password.
 Don't forget to use `make ex1` to build the exercise.
 
-**[Q2]**: Can you bypass the check that "grants you access", without knowing the secret password?
+**[Q2]**: Can you bypass the check that "grants you access", without knowing the secret password? *You should not need to find the password at all*.
 
 Note that when compiling, the stack layout does not always follow the declaration order of the source code. Variables may be moved depending on their type, or they can be padded to keep the stack aligned to 16 bytes.
 
