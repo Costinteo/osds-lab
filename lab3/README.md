@@ -118,7 +118,7 @@ Write a pwntools exploit to get a shell.
 
 ## Extra Challenges
 
-Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Here are the challenges for this lab:
+Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. Here are the challenges for this lab:
 
 1. **Address Space Who?** -- How would we be able to defeat ASLR? Compare libc function addresses when ASLR is on and when it is off, on multiple runs. Notice anything interesting (see pic below)? Can you pop a shell in "Glade of Nightmares" (`nightmares.c`)?
 2. **ROP Overdose** -- Try your ROP skills against `bonus`. It is a real CTF challenge and it should be quite fun, as it requires more interesting chains than the ones we've done. I recommend using Ghidra, IDA or Binary Ninja to decompile it.

@@ -1,12 +1,12 @@
 # Laboratory 0x07 - Miscellaneous Pwnage Extravaganza
 
-Come one, come all, to the Pwnage Extravaganza! In this lab we have multiple challenges, taken from several CTFs or created specifically for this lab. Each exercise in this lab is worth a specific amount of points, that sum up to more than 7 points.
+Come one, come all, to the Pwnage Extravaganza! In this lab we have multiple challenges, taken from several CTFs or created specifically for this lab.
 
 For the theoretical aspects of the lab, there is not much we haven't discussed already. You need to know the same things we've done so far, but this time you have to apply them in creative ways.
 
 Have fun playing!
 
-## Exercise 1 - Memory Salad [2.5p]
+## Exercise 1 - Memory Salad
 
 This challenge is taken from CakeCTF.
 Please use `make ex1` to build the exercise.
@@ -18,7 +18,7 @@ Write a *pwntools* exploit to get the contents of `./flag.txt` printed.
 * Read the manual for interesting functions very carefully.
 * Make sure you understand what the `setup()` does very well.
 
-## Exercise 2 - Fliphammer [4p]
+## Exercise 2 - Fliphammer
 
 Rowhammer is useless! You can only flip one bit! You can't exploit anything with that, can you? *Can you?*
 
@@ -36,7 +36,7 @@ Write a *pwntools* exploit to get a shell.
 * Writing to memory through `/proc/self/mem` bypasses all segment protections. So even if a segment is `r--` you can still write to it.
 * Read a writeup for *Flipper*, [here is one](https://dothidden.xyz/ctfs/glacierctf_2023/flipper/) from .hidden.
 
-## Exercise 3 - Signal-Return Oriented Jailbreak [3.5p]
+## Exercise 3 - Signal-Return Oriented Jailbreak
 
 You've been accused of *serious hacking crimetivity*! Guilty on all charges, you are sent to the Hacker Isolation Chamber.
 Forget about escaping this one, there's barely any instructions to work with!
@@ -49,7 +49,7 @@ Write a *pwntools* exploit to get a shell.
 
 * Read the title.
 
-## Exercise 4 - Magishian [2p]
+## Exercise 4 - Magishian
 
 *In the beginning, there was magic. Prove your might.*
 

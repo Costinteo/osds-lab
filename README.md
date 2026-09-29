@@ -26,13 +26,19 @@ We will use the READMEs as support for the lab, but will also probably use the w
 
 ## Grading
 
-The labs each have a flat **7 points**. The points are equally divided between the exercises.[^exception]
-This might not be completely fair, as some labs/exercises are harder and others are easier. We welcome suggestions for next years.
+There will be two tests throughout the semester:
+1. During the first hour of **LAB 4**.
+2. At the **end of the semester**, during the pre-exam session.
 
-You also get one extra point for free, so you can achieve a total of 50 points.
+The lab has a total of **50 points** distributed as follows:
+* 15 points for the first test
+* 25 points for the second test
+* 10 points for lab activity (answering questions, solving exercises, being
+  consistently present and engaged during the labs)
 
-[^exception]: With the exception of Lab 7, which is special.
-
+The lab exercises, are there for your own practise, but do not account into your
+final grade. You are however, **highly** encouraged to go through them and solve
+them, in order to better understand the lessons.
 
 ## Contributions
 

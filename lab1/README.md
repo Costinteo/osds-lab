@@ -169,7 +169,7 @@ Now that we know about the calling convention, let's play with it. With a debugg
 
 ## Extra Challenges
 
-Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. You can get extra points for them. Here they are:
+Each lab will also have some extra fun challenges that expand on each exercise, to give you an opportunity to explore more for an exercise you liked. Here they are:
 
 1. **Filesystem Crawler** -- Check out what other things the `/proc/` filesystem offers. Some of the stuff there can be really helpful in exploitation. Can you find an information leak that could be useful in a web exploitation context?
 2. **ELF Pro** -- Try writing an ELF parser for the header and some metadata (like sections), following the [format specification](https://flint.cs.yale.edu/cs422/doc/ELF_Format.pdf). There are already [some structures](https://www.man7.org/linux/man-pages/man5/elf.5.html) in Linux that can help you out.
