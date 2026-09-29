@@ -36,9 +36,9 @@ The lab has a total of **50 points** distributed as follows:
 * 10 points for lab activity (answering questions, solving exercises, being
   consistently present and engaged during the labs)
 
-The lab exercises, are there for your own practise, but do not account into your
-final grade. You are however, **highly** encouraged to go through them and solve
-them, in order to better understand the lessons.
+The lab exercises, are there for your own practice, but are not taken into
+account for your final grade. You are however, **highly** encouraged to go
+through them and solve them, in order to better understand the lessons.
 
 ## Contributions
 
